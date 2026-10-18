@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#163b35">
+  <title>Stayledger — Hotel Billing</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="settings.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="Stayledger dashboard">
+        <span class="brand-icon" aria-hidden="true">S</span>
+        <span><strong>PADMA Hotel/strong><small>HOTEL OPERATIONS</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="nav-list">
+        <a class="nav-item active" href="#dashboard" data-view="dashboard"><span class="nav-icon">⌂</span>Overview</a>
+        <a class="nav-item" href="#invoices" data-view="invoices"><span class="nav-icon">▤</span>Invoices</a>
+        <a class="nav-item" href="#settings" data-view="settings"><span class="nav-icon">⚙</span>Hotel details</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-card"><span class="help-icon">?</span><div><strong>Need a hand?</strong><small>Billing workspace</small></div></div>
+        <p class="sidebar-foot">Front desk · <span id="today-label"></span></p>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-sep">/</span><strong id="page-crumb">Overview</strong></div>
+        <div class="topbar-right"><span class="status-dot"></span><span>Front desk</span><span class="avatar">FD</span></div>
+      </header>
+
+      <section class="page-view" id="dashboard-view">
+        <div class="page-heading">
+          <div><p class="eyebrow">HOTEL BILLING</p><h1>Good day. Let’s settle the details.</h1><p class="subheading">Create clear guest invoices and keep every charge in one place.</p></div>
+          <button class="button button-primary" id="new-invoice-top" type="button"><span class="button-plus">＋</span> New invoice</button>
+        </div>
+
+        <div class="stats-grid" aria-label="Billing summary">
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon green">₹</span><span class="stat-period">Today</span></div><p class="stat-label">Revenue collected</p><strong class="stat-value" id="stat-revenue">INR 0.00</strong><p class="stat-note">Payments recorded today</p></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-period">All invoices</span></div><p class="stat-label">Outstanding balance</p><strong class="stat-value" id="stat-outstanding">INR 0.00</strong><p class="stat-note">Amount still due from guests</p></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-icon blue">▤</span><span class="stat-period">All invoices</span></div><p class="stat-label">Invoices issued</p><strong class="stat-value" id="stat-count">0</strong><p class="stat-note">Saved billing records</p></article>
+        </div>
+
+        <div class="section-heading"><div><h2>Recent invoices</h2><p>Your latest guest bills</p></div><button class="button button-quiet" type="button" data-view="invoices">View all <span aria-hidden="true">→</span></button></div>
+        <div class="table-card"><div class="table-scroll"><table class="invoice-table"><thead><tr><th>INVOICE</th><th>GUEST</th><th>STAY</th><th>ISSUED</th><th>AMOUNT</th><th>STATUS</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="recent-rows"><tr class="empty-row"><td colspan="7"><span class="empty-mark">▤</span><strong>No invoices yet</strong><span>Create your first guest bill to see it here.</span></td></tr></tbody></table></div></div>
+      </section>
+
+      <section class="page-view hidden" id="invoices-view">
+        <div class="page-heading compact-heading"><div><p class="eyebrow">BILLING RECORDS</p><h1>Invoices</h1><p class="subheading">Review saved guest bills and their payment status.</p></div><button class="button button-primary" id="new-invoice-list" type="button"><span class="button-plus">＋</span> New invoice</button></div>
+        <div class="filter-row"><label class="search-box"><span aria-hidden="true">⌕</span><input id="invoice-search" type="search" placeholder="Search guest or invoice number" aria-label="Search invoices"></label><select id="status-filter" aria-label="Filter by payment status"><option value="all">All statuses</option><option value="Paid">Paid</option><option value="Partially paid">Partially paid</option><option value="Unpaid">Unpaid</option></select></div>
+        <div class="table-card"><div class="table-scroll"><table class="invoice-table"><thead><tr><th>INVOICE</th><th>GUEST</th><th>STAY</th><th>ISSUED</th><th>AMOUNT</th><th>STATUS</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="all-rows"><tr class="empty-row"><td colspan="7"><span class="empty-mark">▤</span><strong>No invoices yet</strong><span>Create a guest bill to start your billing records.</span></td></tr></tbody></table></div></div>
+      </section>
+
+      <section class="page-view hidden" id="settings-view">
+        <div class="page-heading compact-heading"><div><p class="eyebrow">PROPERTY PROFILE</p><h1>Hotel details</h1><p class="subheading">These details appear on printed guest invoices.</p></div></div>
+        <div class="settings-card">
+          <form id="property-form">
+            <label class="field">Hotel or property name <span class="required">*</span><input name="propertyName" required maxlength="120" placeholder="e.g. The Garden House"></label>
+            <label class="field">Business address<textarea name="propertyAddress" rows="3" maxlength="400" placeholder="Street, city, postal code"></textarea></label>
+            <div class="form-grid"><label class="field">Contact phone<input name="propertyPhone" type="tel" maxlength="30" placeholder="Optional"></label><label class="field">Contact email<input name="propertyEmail" type="email" maxlength="160" placeholder="Optional"></label></div>
+            <div class="settings-actions"><span>Saved on this device only</span><button class="button button-primary" type="submit">Save hotel details</button></div>
+          </form>
+        </div>
+      </section>
+
+      <footer class="page-footer"><span>Stayledger · Hotel billing</span><span>All amounts shown in Indian rupees (INR)</span></footer>
+    </main>
+  </div>
+
+  <dialog class="invoice-dialog" id="invoice-dialog" aria-labelledby="dialog-title">
+    <form method="dialog" class="dialog-close-form"><button class="icon-button close-button" aria-label="Close invoice form">×</button></form>
+    <div class="dialog-header"><p class="eyebrow">GUEST BILLING</p><h2 id="dialog-title">Create an invoice</h2><p>Enter the stay details and any additional charges.</p></div>
+    <form id="invoice-form">
+      <div class="form-section"><div class="form-section-title"><span class="section-number">01</span><div><h3>Guest information</h3><p>Who is this invoice for?</p></div></div>
+        <div class="form-grid"><label class="field span-2">Guest full name <span class="required">*</span><input name="guestName" autocomplete="name" required maxlength="120" placeholder="e.g. Asha Sharma"></label><label class="field">Phone number<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Optional"></label><label class="field">Email address<input name="email" type="email" autocomplete="email" maxlength="160" placeholder="Optional"></label></div>
+      </div>
+      <div class="form-section"><div class="form-section-title"><span class="section-number">02</span><div><h3>Room and stay</h3><p>Dates determine the number of room nights.</p></div></div>
+        <div class="form-grid"><label class="field">Room number<input name="roomNumber" maxlength="20" placeholder="e.g. 204"></label><label class="field">Room type<select name="roomType"><option>Standard</option><option>Deluxe</option><option>Suite</option><option>Other</option></select></label><label class="field">Check-in date <span class="required">*</span><input name="checkIn" type="date" required></label><label class="field">Check-out date <span class="required">*</span><input name="checkOut" type="date" required></label><label class="field">Guests<input name="guestCount" type="number" min="1" max="30" value="1" required></label><label class="field">Rate per night <span class="required">*</span><div class="currency-input"><span>INR </span><input name="nightlyRate" type="number" min="0" step="0.01" value="0" required></div></label></div>
+      </div>
+      <div class="form-section"><div class="form-section-title"><span class="section-number">03</span><div><h3>Additional charges</h3><p>Add meals, minibar, laundry, or other services.</p></div></div>
+        <div id="charge-list" class="charge-list"></div><button type="button" class="add-charge" id="add-charge">＋ Add a charge</button>
+      </div>
+      <div class="form-section"><div class="form-section-title"><span class="section-number">04</span><div><h3>Adjustments and payment</h3><p>Apply a discount, tax, and payment received.</p></div></div>
+        <div class="form-grid"><label class="field">Discount amount<div class="currency-input"><span>INR </span><input name="discount" type="number" min="0" step="0.01" value="0"></div></label><label class="field">Tax rate<input name="taxRate" type="number" min="0" max="100" step="0.01" value="0"><small>Enter the applicable rate for your property.</small></label><label class="field">Amount paid<div class="currency-input"><span>INR </span><input name="amountPaid" type="number" min="0" step="0.01" value="0"></div></label><label class="field">Payment method<select name="paymentMethod"><option>Cash</option><option>Card</option><option>UPI</option><option>Bank transfer</option><option>Other</option></select></label></div>
+      </div>
+      <div class="form-error hidden" id="form-error" role="alert"></div>
+      <div class="dialog-actions"><button type="button" class="button button-quiet" id="cancel-invoice">Cancel</button><button type="submit" class="button button-primary">Save invoice</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="preview-dialog" id="preview-dialog" aria-labelledby="preview-heading">
+    <div class="preview-toolbar"><span id="preview-heading">Invoice preview</span><div><button class="button button-quiet" id="close-preview" type="button">Close</button><button class="button button-primary" id="print-invoice" type="button">Print invoice</button></div></div>
+    <article class="print-invoice" id="print-invoice-content"></article>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

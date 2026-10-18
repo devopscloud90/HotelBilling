@@ -1,0 +1,5 @@
+.settings-card{max-width:700px;padding:24px;border:1px solid #e7ece9;border-radius:12px;background:#fff;box-shadow:0 4px 14px #183d3508}
+.settings-card form{display:grid;gap:16px}
+.settings-card textarea{width:100%;min-height:86px;padding:10px;border:1px solid #dfe7e2;border-radius:7px;color:#364a40;font:11px 'DM Sans',Arial,sans-serif;resize:vertical}
+.settings-actions{display:flex;align-items:center;justify-content:space-between;padding-top:15px;border-top:1px solid #edf1ee}
+.settings-actions>span{color:#9aa49f;font-size:10px}

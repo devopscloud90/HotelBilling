@@ -1,0 +1,1 @@
+<%response.setStatus(404);request.setAttribute("pageTitle","Page not found");%><%@ include file="header.jspf" %><section class="panel error-panel"><h2>Page not found</h2><p>The page you requested does not exist.</p><a class="button primary" href="<%=request.getContextPath()%>/dashboard">Back to overview</a></section><%@ include file="footer.jspf" %>
