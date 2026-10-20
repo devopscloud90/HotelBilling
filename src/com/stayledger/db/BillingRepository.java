@@ -28,6 +28,67 @@ public class BillingRepository {
         "from hotel_invoices i left join (select invoice_id, sum(amount) paid, " +
         "max(payment_method) last_method from hotel_payments group by invoice_id) p on p.invoice_id=i.id";
 
+    public boolean hasStaffUsers() throws SQLException {
+        try (Connection c = Database.open(); PreparedStatement ps = c.prepareStatement("select count(*) from hotel_staff_users"); ResultSet rs = ps.executeQuery()) {
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
+    public boolean createFirstStaffUser(String username, byte[] salt, byte[] hash) throws SQLException {
+        try (Connection c = Database.open()) {
+            c.setAutoCommit(false);
+            try {
+                try (PreparedStatement ps = c.prepareStatement("select id from hotel_auth_lock where id=1 for update"); ResultSet rs = ps.executeQuery()) { rs.next(); }
+                if (hasStaffUsers(c)) { c.rollback(); return false; }
+                try (PreparedStatement ps = c.prepareStatement("insert into hotel_staff_users (username, password_salt, password_hash) values (?, ?, ?)")) {
+                    ps.setString(1, username); ps.setString(2, hex(salt)); ps.setString(3, hex(hash)); ps.executeUpdate();
+                }
+                c.commit();
+                return true;
+            } catch (Exception ex) {
+                c.rollback();
+                if (ex instanceof SQLException) throw (SQLException) ex;
+                throw new SQLException("Unable to create the administrator account.", ex);
+            }
+        }
+    }
+
+    private boolean hasStaffUsers(Connection c) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("select count(*) from hotel_staff_users"); ResultSet rs = ps.executeQuery()) {
+            return rs.next() && rs.getInt(1) > 0;
+        }
+    }
+
+    public boolean verifyStaffUser(String username, byte[] suppliedHash) throws SQLException {
+        try (Connection c = Database.open(); PreparedStatement ps = c.prepareStatement("select password_hash from hotel_staff_users where username=?")) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return false;
+                byte[] storedHash = unhex(rs.getString(1));
+                return java.security.MessageDigest.isEqual(storedHash, suppliedHash);
+            }
+        }
+    }
+
+    public byte[] getStaffPasswordSalt(String username) throws SQLException {
+        try (Connection c = Database.open(); PreparedStatement ps = c.prepareStatement("select password_salt from hotel_staff_users where username=?")) {
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? unhex(rs.getString(1)) : null; }
+        }
+    }
+
+    private String hex(byte[] bytes) {
+        StringBuilder out = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) out.append(String.format("%02x", b & 0xff));
+        return out.toString();
+    }
+
+    private byte[] unhex(String value) {
+        byte[] out = new byte[value.length() / 2];
+        for (int i = 0; i < out.length; i++) out[i] = (byte) Integer.parseInt(value.substring(i * 2, i * 2 + 2), 16);
+        return out;
+    }
+
     public HotelSettings getSettings() throws SQLException {
         HotelSettings settings = new HotelSettings();
         try (Connection c = Database.open();

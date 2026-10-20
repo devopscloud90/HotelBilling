@@ -1,0 +1,7 @@
+# Generated build output
+/HotelBilling.war
+/WEB-INF/classes/
+/build-sources.txt
+
+# Local editor settings
+/.vscode/

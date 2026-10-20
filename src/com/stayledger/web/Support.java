@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class Support extends HttpServlet {
     protected final BillingRepository repo = new BillingRepository();
+    public static String newCsrfToken() {
+        byte[] token = new byte[32];
+        new java.security.SecureRandom().nextBytes(token);
+        return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(token);
+    }
     protected String value(HttpServletRequest req, String name) { String v=req.getParameter(name); return v==null?"":v.trim(); }
     protected BigDecimal decimal(HttpServletRequest req, String name) {
         String v=value(req,name); if(v.isEmpty()) return BigDecimal.ZERO;

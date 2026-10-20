@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 cd /d "%~dp0"
 if "%CATALINA_HOME%"=="" set "CATALINA_HOME=C:\Program Files\Apache Software Foundation\Tomcat 9.0"
 if "%JAVA_HOME%"=="" set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0_503"
@@ -11,7 +11,8 @@ if not exist "%SERVLET_API%" (echo Tomcat servlet-api.jar not found: %SERVLET_AP
 if not exist "WEB-INF\lib\ojdbc14.jar" (echo Oracle JDBC driver missing from WEB-INF\lib & exit /b 1)
 if not exist "WEB-INF\classes" mkdir "WEB-INF\classes"
 if exist "HotelBilling.war" del "HotelBilling.war"
-dir /s /b src\*.java > build-sources.txt
+if exist build-sources.txt del build-sources.txt
+for /r src %%F in (*.java) do (set "SOURCE=%%F" & set "SOURCE=!SOURCE:\=/!" & echo "!SOURCE!" >> build-sources.txt)
 "%JAVAC%" -encoding UTF-8 -source 1.8 -target 1.8 -cp "%SERVLET_API%;WEB-INF\lib\ojdbc14.jar" -d WEB-INF\classes @build-sources.txt
 if errorlevel 1 exit /b 1
 del build-sources.txt
