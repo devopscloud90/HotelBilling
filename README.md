@@ -6,9 +6,9 @@ This version runs as a Java 8 web application on Apache Tomcat 9. Servlets handl
 
 - JDK 8
 - Apache Tomcat 9
-- Oracle XE with the Oracle JDBC driver in `WEB-INF/lib/ojdbc14.jar`
+- Oracle Database XE 11gR2 (11.2.0.3 or 11.2.0.4) with the Java 8 compatible Oracle JDBC 11.2.0.4 driver in `WEB-INF/lib/ojdbc6.jar`
 
-The supplied build script uses the Tomcat and JDK locations from this workstation by default. Set `CATALINA_HOME` and `JAVA_HOME` first if your installation paths differ.
+The supplied build script uses the Tomcat and JDK locations from this workstation by default. Set `CATALINA_HOME` and `JAVA_HOME` first if your installation paths differ. Oracle JDBC 11.2.0.4 is used for compatibility with Oracle 11gR2; JDK 8 requires Oracle Database 11.2.0.3 or later.
 
 ## Database setup
 
