@@ -53,6 +53,15 @@ $env:JAVA_HOME = $jdk.FullName
 $env:CATALINA_HOME = $tomcatHome
 $env:Path = "$($jdk.FullName)\bin;$env:Path"
 
+$serverXmlPath = Join-Path $tomcatHome 'conf\server.xml'
+$serverXml = Get-Content -LiteralPath $serverXmlPath -Raw
+if ($serverXml.Contains('<Connector port="8080"')) {
+    $serverXml = $serverXml.Replace('<Connector port="8080"', '<Connector port="8081"')
+    Set-Content -LiteralPath $serverXmlPath -Value $serverXml -Encoding UTF8
+} elseif (-not $serverXml.Contains('<Connector port="8081"')) {
+    throw 'Could not find Tomcat HTTP connector in server.xml.'
+}
+
 # The deployment commit is pinned so the VM receives the reviewed WAR and schema.
 $release = '229a8d1'
 $rawBase = "https://raw.githubusercontent.com/devopscloud90/HotelBilling/$release"
@@ -71,4 +80,4 @@ if (-not (Get-Service -Name HotelBillingTomcat -ErrorAction SilentlyContinue)) {
 }
 Set-Service -Name HotelBillingTomcat -StartupType Automatic
 Start-Service -Name HotelBillingTomcat
-Write-Output 'Java 8 and Tomcat 9 are installed. HotelBilling.war and schema-oracle.sql are staged. Tomcat is running on its default local-only port 8080.'
+Write-Output 'Java 8 and Tomcat 9 are installed. HotelBilling.war and schema-oracle.sql are staged. Tomcat is running on local-only port 8081.'

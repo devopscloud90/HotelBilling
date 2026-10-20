@@ -61,8 +61,8 @@ EXIT
     if ($LASTEXITCODE -ne 0) { throw 'Could not configure the Tomcat service database settings.' }
     Restart-Service -Name HotelBillingTomcat -Force
     Start-Sleep -Seconds 8
-    $response = Invoke-WebRequest -UseBasicParsing -Uri 'http://localhost:8080/HotelBilling/setup' -TimeoutSec 30
-    Write-Output "Oracle XE schema initialized. Tomcat setup endpoint returned HTTP $([int]$response.StatusCode). Open http://localhost:8080/HotelBilling/setup inside the VM to create the first admin account."
+    $response = Invoke-WebRequest -UseBasicParsing -Proxy $null -Uri 'http://127.0.0.1:8081/HotelBilling/setup' -TimeoutSec 30
+    Write-Output "Oracle XE schema initialized. Tomcat setup endpoint returned HTTP $([int]$response.StatusCode). Open http://localhost:8081/HotelBilling/setup inside the VM to create the first admin account."
 } finally {
     Remove-Item -LiteralPath $userSql, $schemaSql -Force -ErrorAction SilentlyContinue
     [Array]::Clear($secretBytes, 0, $secretBytes.Length)
